@@ -2,7 +2,8 @@ FROM dbgate/dbgate:latest
 
 LABEL description="DbGate Web Database Manager - listo para SQL Server"
 
+EXPOSE 3000
+
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD-SHELL wget --no-verbose --tries=1 --spider http://localhost:${CLIENT_PORT:-3000} || exit 1
-
+  CMD /bin/sh -c 'wget --no-verbose --tries=1 --spider http://localhost:${CLIENT_PORT:-3000} || exit 1'
