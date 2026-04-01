@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: dbgate
+    restart: unless-stopped
+    ports:
+      - "${CLIENT_PORT}:3000"     
+    env_file:
+      - .env
+    volumes:
+      - ./volumes/client:/root/.dbgate
+    networks:
+      - um-base-de-datos-sqlserver
+
+  # ← Aquí más adelante vas a agregar el servicio de SQL Server
+  # mssql:
+  #   build: ./mssql
+  #   ...
+
+networks:
+  um-base-de-datos-sqlserver:
+    driver: bridge

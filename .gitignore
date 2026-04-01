@@ -1,0 +1,3 @@
+# todos los volumenes creados localmente por docker, logs, datos, etc. No queremos subirlos al repositorio
+volumes/*
+.env
