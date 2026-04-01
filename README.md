@@ -12,6 +12,7 @@ Base project to run DbGate with Docker Compose and connect it to SQL Server.
 - [docker-compose.yml](docker-compose.yml): defines the `client` and `mssql` services plus the project network.
 - [Dockerfile.client](Dockerfile.client): DbGate client image.
 - [Dockerfile.server](Dockerfile.server): SQL Server base image.
+- [Dockerfile.cli-tool](Dockerfile.cli-tool): CLI container with sqlcmd tooling.
 - [.env](.env): local environment variables.
 - [.env.example](.env.example): example of the expected variables.
 
@@ -73,3 +74,33 @@ Connection settings:
 - password: `MSSQL_SA_PASSWORD` from `.env`
 
 Its data is stored in `volumes/mssql`.
+
+## Manual check
+
+Run an interactive shell in the tooling container:
+
+```bash
+docker compose exec -it cli-tool bash
+```
+
+Then run commands like these:
+
+```bash
+sqlcmd -S mssql,1433 -U sa -P '$MSSQL_SA_PASSWORD' -C
+```
+
+```bash
+sqlcmd -S mssql,1433 -U sa -P '$MSSQL_SA_PASSWORD' -C -Q "SELECT @@VERSION"
+```
+
+Inside interactive `sqlcmd`:
+
+```sql
+SELECT name FROM sys.databases;
+GO
+```
+
+```sql
+SELECT GETDATE();
+GO
+```
