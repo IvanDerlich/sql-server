@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile.client
     container_name: dbgate
-    restart: unless-stopped
     ports:
       - "${CLIENT_PORT}:3000"     
     env_file:
@@ -16,10 +15,19 @@ services:
     networks:
       - um-base-de-datos-sqlserver
 
-  # ← Aquí más adelante vas a agregar el servicio de SQL Server
-  # mssql:
-  #   build: ./mssql
-  #   ...
+  mssql:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: mssql
+    ports:
+      - "${SQLSERVER_PORT}:1433"
+    env_file:
+      - .env
+    volumes:
+      - ./volumes/mssql:/var/opt/mssql
+    networks:
+      - um-base-de-datos-sqlserver
 
 networks:
   um-base-de-datos-sqlserver:
