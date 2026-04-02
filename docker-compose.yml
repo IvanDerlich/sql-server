@@ -27,6 +27,33 @@ services:
     networks:
       - um-base-de-datos-sqlserver
 
+  db-init:
+    build:
+      context: .
+      dockerfile: Dockerfile.cli-tool
+    env_file:
+      - .env
+    command: >
+      bash -lc "
+      until sqlcmd -S mssql,1433 -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\"; do
+        echo 'Waiting for SQL Server...';
+        sleep 2;
+      done;
+      sqlcmd -S mssql,1433 -U sa -P \"$MSSQL_SA_PASSWORD\" -C
+      -v APP_DB_NAME=\"$APP_DB_NAME\" APP_DB_USER=\"$APP_DB_USER\" APP_DB_PASSWORD=\"$APP_DB_PASSWORD\"
+      -i /scripts/01-init.sql;
+      sqlcmd -S mssql,1433 -U sa -P \"$MSSQL_SA_PASSWORD\" -C
+      -v APP_DB_NAME=\"$APP_DB_NAME\"
+      -i /scripts/02-seed.sql
+      "
+    volumes:
+      - ./scripts:/scripts:ro
+    restart: "no"
+    profiles:
+      - init
+    networks:
+      - um-base-de-datos-sqlserver
+
   cli-tool:
     build:
       context: .
