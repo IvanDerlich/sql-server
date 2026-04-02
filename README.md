@@ -35,6 +35,14 @@ ACCEPT_EULA=Y
 MSSQL_SA_PASSWORD=YourStrong!Passw0rd123
 ```
 
+Application bootstrap variables:
+
+```env
+APP_DB_NAME=appdb
+APP_DB_USER=app_user
+APP_DB_PASSWORD=AppUser!Pass123
+```
+
 ## Usage
 
 1. Copy `.env.example` to `.env` if it does not exist yet.
@@ -46,7 +54,13 @@ MSSQL_SA_PASSWORD=YourStrong!Passw0rd123
 docker compose up -d
 ```
 
-5. Open DbGate at:
+5. Run the one-time database bootstrap container (removed automatically after it finishes):
+
+```bash
+docker compose --profile init run --rm db-init
+```
+
+6. Open DbGate at:
 
 ```text
 http://localhost:3000
@@ -57,7 +71,6 @@ http://localhost:3000
 Client data is stored in `volumes/client` inside the repository.
 
 That folder works as a bind mount, so:
-
 - data persists across container restarts
 - you do not need to look for an internal Docker volume
 - you should not commit real local environment data
@@ -77,13 +90,17 @@ Its data is stored in `volumes/mssql`.
 
 ## Manual check
 
+## Connect to the server from the container
 Run an interactive shell in the tooling container:
 
 ```bash
 docker compose exec -it cli-tool bash
 ```
+## Connect to the server from the container
 
-Then run commands like these:
+sqlcmd -S localhost,$SQLSERVER_PORT -U sa -P '$MSSQL_SA_PASSWORD' -C
+
+## Then run commands like these:
 
 ```bash
 sqlcmd -S mssql,1433 -U sa -P '$MSSQL_SA_PASSWORD' -C
