@@ -104,3 +104,24 @@ GO
 SELECT GETDATE();
 GO
 ```
+
+## Connect From DbGate
+
+After the containers are running, open DbGate at:
+
+```text
+http://localhost:$CLIENT_PORT
+```
+
+Use these SQL Server connection settings in DbGate:
+
+- Server: `mssql`
+- Port: `SQLSERVER_PORT` (from `.env`)
+- User: `sa`
+- Password: `MSSQL_SA_PASSWORD` (from `.env`)
+
+Notes:
+
+- The SQL Server admin user is `sa` (not `root`).
+- The SQL Server port is configured through `SQLSERVER_PORT` in `.env`.
+
